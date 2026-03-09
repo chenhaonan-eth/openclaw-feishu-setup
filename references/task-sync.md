@@ -80,6 +80,11 @@ Current handling:
 
 This is not a replacement for `@openclaw/feishu`.
 It is a workflow layer on top of these built-in tools:
+
+For the broader Feishu setup flow, also reference the official tutorial:
+- https://www.feishu.cn/content/article/7613711414611463386
+
+Built-in tools used here:
 - `feishu_task_create`
 - `feishu_task_get`
 - `feishu_task_update`

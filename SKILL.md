@@ -1,6 +1,6 @@
 ---
-name: feishu-setup
-description: Install, configure, or repair Feishu/Lark integration for OpenClaw, including channel setup, websocket connection mode, plugin enablement, pairing guidance, and Feishu Task-based todo sync workflow. Use when the user asks to install Feishu, configure Lark, fix Feishu connection, enable Feishu task tools, or sync local markdown todos into Feishu Tasks.
+name: feishu-workflow
+description: Install, configure, or repair Feishu/Lark integration for OpenClaw, including channel setup, websocket connection mode, plugin enablement, pairing guidance, official tutorial references, and Feishu Task-based todo sync workflow. Use when the user asks to install Feishu, configure Lark, fix Feishu connection, enable Feishu task tools, read Feishu setup tutorials, or sync local markdown todos into Feishu Tasks.
 ---
 
 # Feishu Setup
