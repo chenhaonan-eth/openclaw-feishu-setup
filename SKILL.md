@@ -1,141 +1,44 @@
-# Feishu Setup Skill
+---
+name: feishu-setup
+description: Install, configure, or repair Feishu/Lark integration for OpenClaw, including channel setup, websocket connection mode, plugin enablement, pairing guidance, and Feishu Task-based todo sync workflow. Use when the user asks to install Feishu, configure Lark, fix Feishu connection, enable Feishu task tools, or sync local markdown todos into Feishu Tasks.
+---
 
-Auto-install and configure Feishu/Lark channel for OpenClaw with WebSocket long-connection mode.
+# Feishu Setup
 
-## Usage
+Use this skill to do one of two things:
 
-User provides:
-- App ID (cli_xxx)
-- App Secret
+1. Set up or repair the OpenClaw Feishu/Lark channel
+2. Sync local markdown todos into Feishu Tasks through OpenClaw's built-in Feishu task tools
 
-Agent will:
-1. Install @openclaw/feishu plugin
-2. Install plugin dependencies
-3. Configure openclaw.json with WebSocket mode
-4. Restart gateway
-5. Guide user through pairing
+## Workflow
 
-## Trigger
+### A. Channel setup / repair
 
-When user mentions:
-- "安装飞书"
-- "配置飞书"
-- "setup feishu"
-- "install lark"
+If the user needs Feishu/Lark connection setup:
 
-## Prerequisites
+- Use `setup.sh` for guided installation when shell execution is appropriate
+- Ensure OpenClaw config enables the `feishu` channel and plugin entry
+- Prefer websocket mode
+- Restart gateway only when needed
+- Guide pairing after the bot is reachable
 
-- OpenClaw installed
-- npm available
-- Gateway not running or can be restarted
+### B. Todo → Feishu Task sync
 
-## Configuration
+If the user wants local todos synced to Feishu Tasks:
 
-Adds to `~/.openclaw/openclaw.json`:
+- Use `scripts/feishu_task_sync.py`
+- Feed it a markdown todo file, a section title, a tasklist name, and the target user's `open_id`
+- Keep the tasklist owner as the bot/app
+- Add the human user as `editor`
+- Store task mapping in a local state file that is NOT committed
 
-```json
-{
-  "channels": {
-    "feishu": {
-      "enabled": true,
-      "dmPolicy": "pairing",
-      "connectionMode": "websocket",
-      "accounts": {
-        "default": {
-          "appId": "cli_xxx",
-          "appSecret": "xxx"
-        }
-      }
-    }
-  },
-  "plugins": {
-    "allow": [..., "feishu"],
-    "load": {
-      "paths": [..., "/path/to/feishu"]
-    },
-    "entries": {
-      "feishu": { "enabled": true }
-    }
-  }
-}
-```
+## Read next when needed
 
-## Steps
+- For detailed sync script usage and cron examples, read `references/task-sync.md`
+- For installation and pairing flow details, read `README.md` only if you need repo-oriented setup context
 
-### 1. Install Plugin
+## Rules
 
-```bash
-npm install -g @openclaw/feishu
-```
-
-### 2. Install Dependencies
-
-```bash
-cd $(npm root -g)/openclaw/extensions/feishu
-npm install
-```
-
-### 3. Update Config
-
-Edit `~/.openclaw/openclaw.json`:
-- Add feishu to channels
-- Add feishu to plugins.allow
-- Add feishu path to plugins.load.paths
-- Add feishu to plugins.entries
-
-### 4. Restart Gateway
-
-```bash
-pkill -f "openclaw gateway"
-openclaw gateway &
-```
-
-### 5. Verify
-
-```bash
-openclaw channels status
-```
-
-Should show: `Feishu default: enabled, configured, running`
-
-### 6. Pairing
-
-User sends message to bot in Feishu, gets pairing code.
-
-Agent runs:
-```bash
-openclaw pairing approve feishu <CODE>
-```
-
-## Troubleshooting
-
-### Plugin fails to load
-
-**Error**: `Cannot find module '@larksuiteoapi/node-sdk'`
-
-**Fix**: Install dependencies in plugin directory
-
-### Gateway not starting
-
-**Check**: `ps aux | grep "openclaw gateway"`
-
-**Restart**: `openclaw gateway &`
-
-### Feishu not in status
-
-**Check**: `openclaw channels capabilities | grep -i feishu`
-
-**Fix**: Verify config and restart gateway
-
-## Notes
-
-- Uses WebSocket mode (no public URL needed)
-- Default dmPolicy is "pairing" (requires approval)
-- Supports direct messages and group chats
-- Includes doc/wiki/drive/bitable tools
-
-## References
-
-- Feishu Open Platform: https://open.feishu.cn
-- OpenClaw Docs: https://docs.openclaw.ai/channels/feishu
-- Plugin Source: https://github.com/openclaw/openclaw (extensions/feishu)
+- Do not commit real secrets, real gateway tokens, or real local state files
+- Prefer OpenClaw built-in Feishu task tools over reimplementing raw Feishu API calls
+- Treat this skill as workflow glue around community-maintained Feishu plugin capabilities, not a replacement for the plugin
