@@ -9,6 +9,7 @@
 - 自动更新 OpenClaw 配置文件
 - 自动重启 gateway
 - 提供配对指引
+- 提供 Feishu Task 同步辅助脚本（本地待办 → 飞书任务）
 
 ## 使用方法
 
@@ -133,6 +134,32 @@ openclaw gateway &
 openclaw channels status
 openclaw channels capabilities | grep -i feishu
 ```
+
+## Feishu Task Sync Helper
+
+仓库内新增：`scripts/feishu_task_sync.py`
+
+用途：
+- 从本地 Markdown 待办区块读取任务
+- 通过 OpenClaw Gateway 调用 `feishu_task*` / `feishu_tasklist*` 工具
+- 自动创建 tasklist、自动加成员、自动去重、支持部分字段更新
+- 用本地 state 文件维护“本地任务 ↔ 飞书任务”映射
+
+示例：
+
+```bash
+python3 scripts/feishu_task_sync.py \
+  --todo-file "$HOME/.openclaw/workspace/mandala/生活系统/待办事项/当前.md" \
+  --section-title "## 飞书同步优先清单" \
+  --tasklist-name "我的待办同步" \
+  --user-open-id "ou_xxx" \
+  --state-file "./feishu_task_sync_state.local.json"
+```
+
+建议：
+- 不要提交真实 state 文件
+- 把 state 文件名设为 `*.local.json` 或其他已忽略路径
+- 如果要自动同步，可结合 `openclaw cron add` 定时执行
 
 ## 功能特性
 
